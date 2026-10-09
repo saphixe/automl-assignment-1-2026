@@ -13,6 +13,7 @@ from typing import Any
 
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import balanced_accuracy_score
 
 Config = dict[str, Any]
 Evaluator = Callable[[Config, int, int], dict[str, Any]]
@@ -36,8 +37,11 @@ def sample_configuration(rng: np.random.Generator) -> Config:
     Return the hyperparameters to pass to RandomForestClassifier. Account for
     dependencies between parameters if you extend the example search space.
     """
-
-    raise NotImplementedError("Implement sampling or use a package's sampler")
+    return {
+        name: values[int(rng.integers(len(values)))]
+        for name, values in SEARCH_SPACE.items()
+    }
+    # sample with replacing meaning there can be duplicates.
 
 
 def make_classifier(config: Config, n_estimators: int, seed: int) -> RandomForestClassifier:
@@ -64,8 +68,11 @@ def predictive_metrics(
     your metrics require. Use the same definitions for validation, final testing,
     and the foundation comparison. This function must not fit the model.
     """
+    predictions = model.predict(X)
 
-    raise NotImplementedError("Implement predictive_metrics in random_forest.py")
+    return {"balanced_accuracy": balanced_accuracy_score(y, predictions)}
+
+    # useful especially if the dataset is imbalanced
 
 
 def validation_objective(metrics: dict[str, float]) -> float:
@@ -74,8 +81,7 @@ def validation_objective(metrics: dict[str, float]) -> float:
     Explain its relationship to the primary metric and whether higher or lower
     is better. Apply that direction consistently in all optimisers.
     """
-
-    raise NotImplementedError("Implement validation_objective in random_forest.py")
+    return metrics["balanced_accuracy"]
 
 
 def make_evaluator(

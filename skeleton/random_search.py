@@ -7,8 +7,8 @@ to retain the results needed to analyse search progress and computational effort
 from __future__ import annotations
 
 from typing import Any
-
-from random_forest import Config, Evaluator
+import numpy as np
+from random_forest import Config, Evaluator, sample_configuration
 
 
 def optimise_random_search(
@@ -24,5 +24,19 @@ def optimise_random_search(
     whether higher or lower values are better.
     Return the selected configuration and results needed for your analysis.
     """
+    rng = np.random.default_rng(seed)
 
-    raise NotImplementedError
+    best_config = None         # start with empty config
+    best_score = -float("inf") # trying to maximise score
+    history = []               # keep tract of trials
+
+    for trial in range(n_trials):
+        config = sample_configuration(rng)          # generate a randon config
+        result = evaluator(config, n_trees, seed)   # evaluate and produce result
+        history.append(result)
+
+        if result["objective"] > best_score:        # check config performance
+            best_score = result["objective"]
+            best_config = config
+
+    return best_config, history
