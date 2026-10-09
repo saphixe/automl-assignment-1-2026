@@ -26,7 +26,7 @@ def optimise_smbo(
     Return the selected configuration and results needed for your analysis.
     """
 
-    sampler = optuna.samplers.TPESampler(seed=seed, n_startup_trials=n_trials)
+    sampler = optuna.samplers.TPESampler(seed=seed, n_startup_trials=min(5, n_trials))
     study = optuna.create_study(direction="maximize", sampler=sampler)
 
     history = []

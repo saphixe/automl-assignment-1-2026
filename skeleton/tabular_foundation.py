@@ -7,9 +7,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from sklearn.metrics import accuracy_score, balanced_accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import balanced_accuracy_score
 from time import perf_counter
 from data_loading import DataSplits, prepare_final_data
 from tabpfn import TabPFNClassifier

@@ -134,28 +134,3 @@ def prepare_final_data(
     return X_fit, y_train_valid, X_test, np.asarray(splits.y_test)
 
 
-for name in DATASETS:
-    X, y = load_dataset(name)
-    splits = load_and_split(name)
-
-    print(f"\n=== {name} ===")
-
-    print("Samples:", X.shape[0])
-    print("Features:", X.shape[1])
-
-    print("Numerical features:",
-          len(X.select_dtypes(include=["number", "bool"]).columns))
-
-    print("Categorical features:",
-          len(X.select_dtypes(exclude=["number", "bool"]).columns))
-
-    print("Missing values:", X.isna().sum().sum())
-
-    print("Classes:", len(np.unique(y)))
-
-    print("Class distribution:")
-    print(pd.Series(y).value_counts(normalize=True))
-
-    print(splits.X_train.shape)
-    print(splits.X_valid.shape)
-    print(splits.X_test.shape)
